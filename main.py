@@ -6,7 +6,7 @@ from random import randint, uniform
 import numpy as np
 import scipy.interpolate as si
 from PIL import Image
-from pyclick import HumanCurve
+from pyclick import HumanCurve 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
@@ -16,20 +16,31 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from Recaptcha.recaptcha import Recaptcha
 
+"""
+> reCAPTCHA 이미지를 분석하여 정답 타일을 찾고, 인간처럼 보이는 웹 브라우저 상호작용을 통해 해당 타일을 클릭한다.
+
+- Google reCAPTCHA demo page에 접속
+- reCAPTCHA 박스를 클릭하여 이미지 캡챠를 트리거한다.
+- 캡챠 이미지를 스크린샷으로 저장하고, 저장된 이미지를 분석하여 정답 타일 클릭한다.
+- 만약 캡챠가 여러 단계로 구성되어 있다면, 각 단계를 해결한다.
+"""
+
+
 # Initialize selenium, model, class list
-rekt = Recaptcha()
+rekt = Recaptcha() 
+
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-blink-features=AutomationControlled')
 #driver = webdriver.Chrome(r"../chromedriver.exe", options=options) # options
 # driver = webdriver.Chrome(ChromeDriverManager().install())
 driver = webdriver.Chrome(ChromeDriverManager().install())
-with open("rc_class.json") as f:
+with open("rc_class.json", 'r', encoding='utf-8') as f:
     rc_class = json.load(f)
 
-# Using Bezier Curve for simulate humane like mouse movments
+# 인간처럼 보이는 마우스 움직임을 시뮬레이션하기 위해, Bezier curve를 사용해 마우스의 움직임 경로 생성
 def human_click(start_element=None, end_element=None, target_points=30):
-    if start_element is None:
-        start_element = driver.find_element_by_xpath("/html")
+    if start_element is None: # 마우스 움직임의 시작 지점이 주어지지 않은 경우,
+        start_element = driver.find_element_by_xpath("/html") 
         start_xy = (randint(30, 60), randint(30, 60))
         action = ActionChains(driver)
         action.move_to_element(start_element)
@@ -38,6 +49,8 @@ def human_click(start_element=None, end_element=None, target_points=30):
     else:
         start_xy = (start_element.location["x"], start_element.location["y"])
     end_xy = (end_element.location["x"], end_element.location["y"])
+
+    # Bezier Curve 생성 3
     curve_point = HumanCurve(
         start_xy, end_xy, upBoundary=0, downBoundary=0, targetPoints=target_points
     ).points
@@ -148,8 +161,10 @@ def click_tiles(results):
     if correct_class in rc_class:
         correct_class = rc_class[correct_class]
     else:
-        raise ValueError("This script didnt support that class yet.")
-
+        # raise ValueError("This script didnt support that class yet.")
+        print("This script doesn't support that class yet. Skipping...")
+        return
+              
     # Click tiles
     tiles = driver.find_elements_by_tag_name("td")
     tile_column = 0

@@ -10,6 +10,7 @@ from pyclick import HumanCurve
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -33,14 +34,19 @@ options = webdriver.ChromeOptions()
 options.add_argument('--disable-blink-features=AutomationControlled')
 #driver = webdriver.Chrome(r"../chromedriver.exe", options=options) # options
 # driver = webdriver.Chrome(ChromeDriverManager().install())
-driver = webdriver.Chrome(ChromeDriverManager().install())
+#driver = webdriver.Chrome(r"C:\Users\USER\bomishot\chromedriver-win32\chromedriver.exe")
+#driver = webdriver.Chrome(r"..\chromedriver-win32\chromedriver.exe")
+#driver = webdriver.Chrome()
+service = webdriver.ChromeService(executable_path = r'C:\Users\USER\bomishot\chromedriver-win32\chromedriver.exe')
+driver = webdriver.Chrome(service=service)
+
 with open("rc_class.json", 'r', encoding='utf-8') as f:
     rc_class = json.load(f)
 
 # 인간처럼 보이는 마우스 움직임을 시뮬레이션하기 위해, Bezier curve를 사용해 마우스의 움직임 경로 생성
 def human_click(start_element=None, end_element=None, target_points=30):
     if start_element is None: # 마우스 움직임의 시작 지점이 주어지지 않은 경우,
-        start_element = driver.find_element_by_xpath("/html") 
+        start_element = driver.find_element(By.XPATH, "/html") 
         start_xy = (randint(30, 60), randint(30, 60))
         action = ActionChains(driver)
         action.move_to_element(start_element)
@@ -81,9 +87,15 @@ def main():
     # Open chromedriver selenium
     driver.get("https://www.google.com/recaptcha/api2/demo")
     driver.switch_to.default_content()
-    iframes = driver.find_elements_by_tag_name("iframe")
-    driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
-
+    #iframes = driver.find_elements_by_tag_name("iframe")
+    #iframes = driver.find_element(By.TAG_NAME, "iframe")
+    #driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe")[0])
+    #driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+    frames = driver.find_elements(By.TAG_NAME, "iframe")
+    if len(frames) > 0:
+        driver.switch_to.frame(frames[0])
+    else:
+        print("No iframe found")
     # Click reCaptcha box
     check_box = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "recaptcha-anchor"))
@@ -93,17 +105,17 @@ def main():
     # Screenshoot image
     sleep_uniform(3, 5)
     driver.switch_to.default_content()
-    iframes = driver.find_elements_by_tag_name("iframe")
+    iframes = driver.find_elements(By.TAG_NAME, "iframe")
     driver.switch_to.frame(iframes[2])
 
     # Check ReCaptcha type
     try:
-        instruction = driver.find_element_by_xpath(
+        instruction = driver.find_element(By.XPATH,
             r'//*[@id="rc-imageselect"]/div[2]/div[1]/div[1]/div[2]/span'
         ).text
     except:
         try:
-            instruction = driver.find_element_by_class_name(
+            instruction = driver.find_element(By.CLASS_NAME,
                 r"rc-imageselect-carousel-instructions"
             ).text
         except:
@@ -126,8 +138,10 @@ def main():
 
             # Check if captcha is solved
             try:
-                driver.find_element_by_id(r"recaptcha-verify-button")
+                driver.find_element(By.ID, r"recaptcha-verify-button")
+                print('ALL SUCCESS')
             except:
+                print('FAIL - not verify-button')
                 break
     else:
         correct_tile = solve_captcha()
@@ -137,14 +151,14 @@ def main():
 
 
 def click_next():
-    next_button = driver.find_element_by_id(r"recaptcha-verify-button")
+    next_button = driver.find_element(By.ID, r"recaptcha-verify-button")
     human_click(end_element=next_button)
 
 
 def solve_captcha():
     global driver
-    driver.find_element_by_tag_name("table").screenshot("web_screenshot.png")
-    max_column = len(driver.find_elements_by_tag_name("tr"))
+    driver.find_element(By.TAG_NAME, "table").screenshot("web_screenshot.png")
+    max_column = len(driver.find_elements(By.TAG_NAME, "tr"))
 
     # Inference
     img = Image.open("web_screenshot.png")  # PIL image
@@ -153,20 +167,20 @@ def solve_captcha():
 
 def click_tiles(results):
     global driver
-    max_column = len(driver.find_elements_by_tag_name("tr"))
+    max_column = len(driver.find_elements(By.TAG_NAME, "tr"))
 
-    correct_class = driver.find_element_by_xpath(
+    correct_class = driver.find_element(By.XPATH, 
         r'//*[@id="rc-imageselect"]/div[2]/div[1]/div[1]/div/strong'
     ).text
+    print('correct class', correct_class)
+    print('rc_class', rc_class)
     if correct_class in rc_class:
         correct_class = rc_class[correct_class]
     else:
-        # raise ValueError("This script didnt support that class yet.")
-        print("This script doesn't support that class yet. Skipping...")
-        return
+        raise ValueError("This script didnt support that class yet.")
               
     # Click tiles
-    tiles = driver.find_elements_by_tag_name("td")
+    tiles = driver.find_elements(By.TAG_NAME, "td")
     tile_column = 0
     tile_row = 1
     old_tile = None

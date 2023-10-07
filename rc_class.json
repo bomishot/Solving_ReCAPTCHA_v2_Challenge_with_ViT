@@ -11,5 +11,11 @@
     "parking meters":"parking meter",
     "buses":"bus",
     "bus":"bus",
-    "vehicles":"car"
+    "vehicles":"car",
+    "자전거":"bicycle",
+    "자동차":"car",
+    "소화전":"fire hydrant",
+    "오토바이":"motorcycle",
+    "버스":"bus",
+    "횡단보도":"traffic light"
  }

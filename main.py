@@ -17,34 +17,41 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from Recaptcha.recaptcha import Recaptcha
 
-"""
-> reCAPTCHA 이미지를 분석하여 정답 타일을 찾고, 인간처럼 보이는 웹 브라우저 상호작용을 통해 해당 타일을 클릭한다.
 
-- Google reCAPTCHA demo page에 접속
-- reCAPTCHA 박스를 클릭하여 이미지 캡챠를 트리거한다.
-- 캡챠 이미지를 스크린샷으로 저장하고, 저장된 이미지를 분석하여 정답 타일 클릭한다.
-- 만약 캡챠가 여러 단계로 구성되어 있다면, 각 단계를 해결한다.
 """
-
+reCAPTCHA 이미지를 분석하여 정답 타일을 찾고, 
+웹 브라우저 상호작용을 통해 해당 타일을 인간처럼 클릭합니다.
+"""
 
 # Initialize selenium, model, class list
 rekt = Recaptcha() 
 
+# ChromeDriver옵션 설정 및 서비스 초기화
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-blink-features=AutomationControlled')
-#driver = webdriver.Chrome(r"../chromedriver.exe", options=options) # options
-# driver = webdriver.Chrome(ChromeDriverManager().install())
-#driver = webdriver.Chrome(r"C:\Users\USER\bomishot\chromedriver-win32\chromedriver.exe")
-#driver = webdriver.Chrome(r"..\chromedriver-win32\chromedriver.exe")
-#driver = webdriver.Chrome()
 service = webdriver.ChromeService(executable_path = r'C:\Users\USER\bomishot\chromedriver-win32\chromedriver.exe')
 driver = webdriver.Chrome(service=service)
 
+# class 정보 불러오기
 with open("rc_class.json", 'r', encoding='utf-8') as f:
     rc_class = json.load(f)
 
-# 인간처럼 보이는 마우스 움직임을 시뮬레이션하기 위해, Bezier curve를 사용해 마우스의 움직임 경로 생성
+
 def human_click(start_element=None, end_element=None, target_points=30):
+    """
+    인간처럼 보이는 클릭을 시뮬레이션하는 함수
+    
+    인자:
+    - start_element: 클릭의 시작 원소 (None일 경우, 랜덤 위치에서 시작)
+    - end_element: 클릭의 종료 원소 (필수)
+    - target_points: Bezier curve의 타겟 포인트 수
+    
+    작동 원리:
+    1. 시작 원소의 위치를 계산합니다.
+    2. 끝 원소의 위치를 계산합니다.
+    3. 시작점과 끝점 사이의 Bezier curve를 계산합니다.
+    4. curve를 따라 마우스를 이동시키고, 끝 원소를 클릭합니다.
+    """
     if start_element is None: # 마우스 움직임의 시작 지점이 주어지지 않은 경우,
         start_element = driver.find_element(By.XPATH, "/html") 
         start_xy = (randint(30, 60), randint(30, 60))
@@ -56,7 +63,7 @@ def human_click(start_element=None, end_element=None, target_points=30):
         start_xy = (start_element.location["x"], start_element.location["y"])
     end_xy = (end_element.location["x"], end_element.location["y"])
 
-    # Bezier Curve 생성 3
+    # Bezier Curve 생성 
     curve_point = HumanCurve(
         start_xy, end_xy, upBoundary=0, downBoundary=0, targetPoints=target_points
     ).points
@@ -79,23 +86,37 @@ def human_click(start_element=None, end_element=None, target_points=30):
 
 # Randomly sleep
 def sleep_uniform(min, max):
+    """
+    일정한 범위의 시간 동안 프로세스를 일시 중지하는 함수.
+    
+    인자:
+    - min: 최소 대기 시간 (초)
+    - max: 최대 대기 시간 (초)
+    
+    작동 원리:
+    min과 max 사이에서 무작위로 선택된 시간 동안 스레드를 일시 중지합니다.
+    """
     rand = uniform(min, max)
     time.sleep(rand)
 
 
 def main():
-    # Open chromedriver selenium
+    """
+    reCAPTCHA 문제를 해결하는 주요 함수.
+    
+    작동 원리:
+    1. 웹 드라이버를 열고 Google reCAPTCHA 데모 페이지에 접속합니다.
+    2. reCAPTCHA 문제 유형을 확인하고 적절한 방식으로 문제를 해결합니다.
+    3. 모든 reCAPTCHA 문제가 해결되면 프로세스를 종료합니다.
+    """
     driver.get("https://www.google.com/recaptcha/api2/demo")
     driver.switch_to.default_content()
-    #iframes = driver.find_elements_by_tag_name("iframe")
-    #iframes = driver.find_element(By.TAG_NAME, "iframe")
-    #driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe")[0])
-    #driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
     frames = driver.find_elements(By.TAG_NAME, "iframe")
     if len(frames) > 0:
         driver.switch_to.frame(frames[0])
     else:
         print("No iframe found")
+
     # Click reCaptcha box
     check_box = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "recaptcha-anchor"))
@@ -151,11 +172,25 @@ def main():
 
 
 def click_next():
+    """
+    reCAPTCHA의 '다음' 버튼을 클릭하는 함수.
+    
+    작동 원리:
+    "recaptcha-verify-button" 요소를 찾고, human_click 함수를 사용하여 클릭을 시뮬레이션합니다.
+    """
     next_button = driver.find_element(By.ID, r"recaptcha-verify-button")
     human_click(end_element=next_button)
 
 
 def solve_captcha():
+    """
+    reCAPTCHA 문제를 해결하고, 정답 타일의 인덱스를 반환하는 함수.
+    
+    작동 원리:
+    1. 현재 웹 페이지의 캡챠 이미지를 스크린샷으로 저장합니다.
+    2. 저장된 이미지를 모델에 전달하여 인터프리터를 실행합니다.
+    3. 반환된 결과를 반환합니다.
+    """
     global driver
     driver.find_element(By.TAG_NAME, "table").screenshot("web_screenshot.png")
     max_column = len(driver.find_elements(By.TAG_NAME, "tr"))
@@ -166,6 +201,17 @@ def solve_captcha():
 
 
 def click_tiles(results):
+    """
+    주어진 결과를 기반으로 타일을 클릭하는 함수.
+    
+    인자:
+    - results: 모델에서 반환된 결과 (타일의 위치와 클래스 정보 포함)
+    
+    작동 원리:
+    1. 정답 클래스를 결정합니다.
+    2. results를 순회하면서 각 타일의 위치와 클래스를 검사합니다.
+    3. 일치하는 타일을 human_click 함수를 사용하여 클릭합니다.
+    """
     global driver
     max_column = len(driver.find_elements(By.TAG_NAME, "tr"))
 

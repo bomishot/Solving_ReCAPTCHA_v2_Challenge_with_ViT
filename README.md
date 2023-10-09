@@ -16,42 +16,45 @@
 
 | project name | Solving ReCAPTCHA v2 Challenge using Classfication-based Approach with Vision Transformer | 
 | ------------ | -------------- |
-| project period | 2023.05.16-2023.06.01 |
+| project period | 2023.05.16-2023.06.01 / 2023.9.18-2023.10.9 (약 1달 반) |
 | member | 개인 | 
 | project keywords | Vision Transformer, classification-based approach about small object detection, Recaptcha Challenge |
 
 <br>
 <br>
 
-## Project Process
-1. 데이터 가져오기
-   * 본 연구에서는 Recaptcha v2 Challenge 해결을 위해 kaggle 사이트에서 11,671개의 이미지를 수집하였습니다. 각 이미지는 12개의 카테고리로 분류되어 있습니다.
-2. 이미지 데이터 전처리
-   * generator로 훈련, 테스트 이미지 데이터를 생성하였습니다.
-4. 작은 이미지 데이터 생성
-   * 원본 이미지 데이터 3x3 사이즈로 분할하였습니다. 원본 이미지는 약 만개, 생성된 작은 이미지는 약 육만개입니다.
-5. 모델링
-   * Vision Transformer모델의 B_32(base 32)구조를 선택했습니다. 상대적으로 작은 모델로, 제한된 컴퓨터 리소스와 계산 효율성을 고려해 선택하였습니다.
-   * vit_b32구조를 첫번째 층에 추가하였으며, 그 후 BatchNormalization, Dense층을 이용해 12개의 label 분류 모델을 만들었습니다.
-6. train_generator에 모델 훈련시키고, 저장
-7. 큰 이미지 데이터 분류 성능
-8. 작은 이미지 데이터 분류 성능능
-  
-<br>
-<br>
-  
-## Abstract
-
-한글 요약 : 이 논문은 Vision Transformer를 활용한 분류 기반의 접근 방식을 통해 Recaptcha 챌린지를 해결하는 것을 다루고 있습니다. 기존의 객체 검출 방식인 YOLO의 문제점을 보완하며, 우수한 성능을 보이는 것을 확인하였습니다. 연구에서는 Vision Transformer의 강인한 특성과 작은 객체 분류에 대한 우수성을 설명하고, 이전에 제안된 접근 방식의 이점과 한계를 분석하였습니다. 실험 결과를 통해 제안된 접근 방식의 성능 향상을 입증하고, 작은 객체 분류에 대한 기존 연구와의 차이를 확인하였습니다. 이를 통해 Vision Transformer를 활용한 분류 기반의 접근 방식이 Recaptcha 챌린지에서의 가치와 기여도를 확인할 수 있었습니다.
+![제목 없는 동영상 - Clipchamp로 제작 (1)](https://github.com/bomishot/Solving_ReCAPTCHA_v2_Challenge_with_ViT/assets/97582403/9ff56b53-7ce7-4230-bab6-fe37d9e9e372)
 
 
-핵심어 : Vision Transformer, 분류 기반 접근 방식, 작은 객체 분류, Recaptcha 챌린지
+# Abstract
+본 논문은 Vision Transformer(ViT)를 중심으로 한 분류 기반 접근 방식을 통해 Recaptcha 챌린지를 탐구합니다. YOLO를 활용한 기존 객체 탐지 기법의 한계를 극복하면서 뛰어난 성능 향상을 확인하였습니다. 연구 과정에서 ViT의 견고한 특성과 소형 객체 분류에서의 능력에 주목하였고, 이전 방법론들의 강점과 약점을 철저히 분석하였습니다. 실험 결과를 통해 본 연구의 방법론이 성능 향상을 도출하였으며, 소형 객체 분류와 관련된 기존 연구와의 명확한 차별성을 확인하였습니다. 이러한 결과는 ViT기반의 분류 전략이 Recaptcha 챌린지에 중요한 가치와 기여를 제공함을 보여줍니다.
+
+
+핵심어 : Vision Transformer, 분류 기반 접근 방식, 소형 객체 분류, Recaptcha 챌린지
 
 
 
+
+## 결론
+1.	성능 : Vision Transformer는 YOLO에 비해 전반적으로 더 높은 성능을 보였습니다. 특히, 타겟 클래스의 F1-score에서 큰 차이를 보였습니다. 이는 Vision Transformer가 이미지의 디테일한 정보를 더 잘 캡쳐하고, 분류 성능이 뛰어나다는 것을 나타냅니다.
+	
+2.	YOLO의 특성 : 이전 논문에서 사용하였던, YOLO는 원래 실시간 객체 탐지를 목적으로 설계되었습니다. 즉, 여러 객체의 위치와 그 객체의 클래스를 동시에 예측하는 것에 최적화되어 있습니다. 반면, reCAPTCHA v2의 문제 설정에서는 단순히 특정 클래스의 객체가 이미지에 포함되어 있는지만 판단하면 됩니다. 이러한 task는 YOLO의 전체 기능이 필요하지 않을 수 있을 것으로 보입니다.
+
+3.	ViT의 특성 : ViT는 이미지를 여러 패치로 나누고 각 패치의 정보를 사용하여 이미지를 분류합니다. 이러한 방식은 전체 이미지에 걸쳐 발생하는 패턴과 관계를 더 잘 학습할 수 있기 때문에, reCAPTCHA v2와 같은 문제에서 효과적일 수 있습니다.
+
+4.	효율성 : ViT는 대규모 데이터에서 훈련되었을 때 특히 더 높은 성능을 발휘합니다. 짧은 훈련시간을 거쳐 만들어진 저의 ViT 모델로도 비교적 높은 정확도와 f1-score을 보였습니다. 이는 ViT가 복잡하고 다양한 배경 속에서도 객체를 잘 분류할 수 있음을 나타냅니다.
+
+5.	적용성 : reCAPTCHA v2와 같은 문제에는 단순한 이진 분류 방식이 더 적합할 수 있습니다. 여러 객체를 동시에 탐지하고 위치를 지정할 필요가 없기 때문입니다. 이러한 관점에서, ViT가 YOLO보다 더 적합한 선택이라고 볼 수 있습니다.
+
+
+최종적으로, reCAPTCHA v2를 이진 분류 문제로보고, Vision Transformer를 사용하는 것이 더 적절한 선택과 성능을 보일 것으로 판단됩니다. 
 
 본 연구는 ViT 모델을 활용한 객체 검출에 대한 성능 평가와 ReCAPTCHA 챌린지 해결에 대해 분석하였습니다. ViT모델은 YOLO와 비교하여 객체 검출에서의 일부 단점을 보완하였으며, 분류 기반 접근 방식의 장점을 활용하여 ReCAPTCHA 챌린지 해결에 효과적인 도구로 활용될 수 있음을 확인하였습니다.
+
+
   
+
+""" 이후 수정..
 <br>
 <br>
     

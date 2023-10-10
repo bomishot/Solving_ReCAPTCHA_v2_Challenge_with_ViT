@@ -1,5 +1,5 @@
 # Solving ReCAPTCHA v2 Challenge using Classification-based Approach with Vision Transformer
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)   ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)   ![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)  
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)   ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)  
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
 ![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
 ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white)
@@ -48,15 +48,15 @@
    2.2 Base model : Transfer learning based on Inception v3  
    2.3 모델 선정 : Vision Transformer  
    2.4 모델 훈련  
-   2.5 [Vision Transformer 테스트 결과](## 테스트 방법의 차별성)
+   2.5 [Vision Transformer 테스트 결과](##테스트_방법의_차별성)
 	2.5.1 큰 이미지 분류 성능   
    	2.5.2 작은 이미지 분류 성능 및 라벨링  
    2.6 YOLO 테스트 결과  
-3. 결과 분석  
-   3.1 [Vision Transformer과 YOLO 모델 성능 비교](# Classification Report)
-   3.2 [YOLO의 문제점 및 해결 방안](## 기존 방법 YOLO의 문제점 해결 예시)
-   3.3 실제 Recaptcha 시스템에 적용하여 테스트 (YOLO)  
-4. 결론 및 향후 연구 방향  
+3. 결과 분석    
+   3.1 [Vision Transformer과 YOLO 모델 성능 비교](##Classification_Report)  
+   3.2 [YOLO의 문제점 및 해결 방안](##기존_방법_YOLO의_문제점_해결_예시)
+   3.3 실제 Recaptcha 시스템에 적용하여 테스트 (YOLO)    
+4. 결론 및 향후 연구 방향    
    4.1 [결론](##결론)  
    4.2 한계점 및 향후 연구 방향  
 
@@ -102,9 +102,10 @@ Recaptcha는 사용자에게 특정 class의 이미지를 선택하도록 요청
 3.	효율성 : 각 이미지에 대한 분류 결정은 독립적으로 이루어져야하므로, 이진 분류 모델은 다중 클래스 분류 모델보다 계산적으로 더 효율적입니다.
 4.	확장성 : 새로운 class를 도입할 때마다 새로운 이진 분류기를 학습시키기만 하면되므로 확장성을 고려했을 때 효율적입니다.
 
+<br>
+<br> 
 
-
-## 기존 방법 YOLO의 문제점 해결 예시
+## 기존_방법_YOLO의_문제점_해결_예시
 ### EX1) Hydrant
 ![image](https://github.com/bomishot/Solving_ReCAPTCHA_v2_Challenge_with_ViT/assets/97582403/686ff345-0606-4671-a809-142d60f1bec4)
 원본 Hydrant이미지입니다. reCAPTCHA에서의 상황은 “소화전이 포함된 타일을 모두 선택하세요” 입니다.
@@ -126,12 +127,13 @@ YOLO에서의 (0,1)을 bounding box에 의해 초과타일로 포함하여 클�
 
 YOLO의 3x3크기 이미지에서 (1,2)와, 4x4 크기 이미지에서 (0,2)(1,2)는 초과타일로 볼 수 있습니다. Vision Transformer는 이 초과타일을 not car로 잘 인지해내는 것을 보일 수 있었습니다.
 
-
+<br>
+<br> 
 
   
-# Classification Report
-## Vision Transformer
-### Big Images Test
+## Classification Report
+### Vision Transformer
+-  Big Images Test
 | Class         | Accuracy | F1-score (해당 class) | F1-score (해당 class 제외한 모든 class) | 개수 |
 |---------------|----------|-----------------------|---------------------------------------|------|
 | Bicycle       | 0.99     | 0.98                  | 0.99                                  | 600  |
@@ -157,7 +159,7 @@ Big image에서 잘못 분류된 케이스입니다.
 이렇게 잘못 분류되는 이미지들을 통해 모델이 작은 객체까지 잘 인지하고 있어, 작은 이미지 분류에서의 작은 객체 검출 측면에서 긍정적인 효과를 보일 것입니다.
 
 <br>
-### Small images Test
+- Small images Test
 
 | Class         | Accuracy | F1-score (해당 class가 아닌 small image) | F1-score (해당 class small image) |
 |---------------|----------|----------------------------------------|-----------------------------------|
@@ -183,8 +185,8 @@ Big image에서 잘못 분류된 케이스입니다.
 
 
 
-## YOLO
-### Big images Test
+### YOLO
+-  Big images Test
 | Class         | Accuracy | F1-score (Target class) | F1-score (Non-target class) | Count |
 |---------------|----------|-------------------------|-----------------------------|-------|
 | Bicycle       | 0.78     | 0.51                    | 0.86                        | 600   |

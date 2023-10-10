@@ -208,7 +208,9 @@ Big image에서 잘못 분류된 케이스입니다.
 
 <br>
 <br>
+
 ## References
+
 [1] Image Recognition for Solving Google’s reCAPTCHA An Investigation of how Different Aspects Affects the Security of Google’s reCAPTCHA  (Stockholm, Sweden 2022) [논문]
 
 [2] Object Detection based Solver for Google's Image reCAPTCHA v2 (2021.4) [논문]

@@ -17,8 +17,6 @@
 | project keywords | Vision Transformer, classification-based approach about small object detection, Recaptcha Challenge |
 
 
-[doc](https://github.com/bomishot/Solving_ReCAPTCHA_v2_Challenge_with_ViT/blob/main/%EC%A1%B8%EC%97%85%EB%85%BC%EB%AC%B8.docx)
-, [tistory](https://bomishot.tistory.com/38) -> 본 논문에 대한 구체적인 내용이 확인 가능합니다.
 <br>
 <br>
 
@@ -60,8 +58,10 @@
    4.1 [결론](#결론)  
    4.2 한계점 및 향후 연구 방향  
 
+<br>
 
-
+[doc](https://github.com/bomishot/Solving_ReCAPTCHA_v2_Challenge_with_ViT/blob/main/%EC%A1%B8%EC%97%85%EB%85%BC%EB%AC%B8.docx)
+, [tistory](https://bomishot.tistory.com/38) -> 본 논문에 대한 구체적인 내용이 확인 가능합니다.
 <br>
 <br> 
 

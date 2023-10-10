@@ -48,16 +48,16 @@
    2.2 Base model : Transfer learning based on Inception v3  
    2.3 모델 선정 : Vision Transformer  
    2.4 모델 훈련  
-   2.5 [Vision Transformer 테스트 결과](##테스트_방법의_차별성)
-	2.5.1 큰 이미지 분류 성능   
-   	2.5.2 작은 이미지 분류 성능 및 라벨링  
+   2.5 [Vision Transformer 테스트 결과](#테스트-방법의-차별성)  
+	2.5.1 큰 이미지 분류 성능     
+   	2.5.2 작은 이미지 분류 성능 및 라벨링    
    2.6 YOLO 테스트 결과  
 3. 결과 분석    
-   3.1 [Vision Transformer과 YOLO 모델 성능 비교](##Classification_Report)  
-   3.2 [YOLO의 문제점 및 해결 방안](##기존_방법_YOLO의_문제점_해결_예시)
+   3.1 [Vision Transformer과 YOLO 모델 성능 비교](#Classification-Report)  
+   3.2 [YOLO의 문제점 및 해결 방안](#기존-방법-YOLO의-문제점-해결-예시)
    3.3 실제 Recaptcha 시스템에 적용하여 테스트 (YOLO)    
 4. 결론 및 향후 연구 방향    
-   4.1 [결론](##결론)  
+   4.1 [결론](#결론)  
    4.2 한계점 및 향후 연구 방향  
 
 
@@ -86,7 +86,7 @@
 <br>
 <br>
 
-## 테스트_방법의_차별성
+## 테스트 방법의 차별성
 Recaptcha는 사용자에게 특정 class의 이미지를 선택하도록 요청하는데, 이 때의 상황을 고려하여 recaptcha v2와 같은 시나리오에서의 성능 검증에 초점을 맞추어 test를 진행하였습니다. 특정 클래스의 이미지에 대해, 이진 분류를 통해 모델의 분류 성능을 평가하여, 특정 클래스에 대한 모델의 민감도나 특정 클래스를 잘 걸러내는 능력을 보일 수 있습니다.
 
 구체적인 방법으로는, 
@@ -105,7 +105,7 @@ Recaptcha는 사용자에게 특정 class의 이미지를 선택하도록 요청
 <br>
 <br> 
 
-## 기존_방법_YOLO의_문제점_해결_예시
+## 기존 방법 YOLO의 문제점 해결 예시
 ### EX1) Hydrant
 ![image](https://github.com/bomishot/Solving_ReCAPTCHA_v2_Challenge_with_ViT/assets/97582403/686ff345-0606-4671-a809-142d60f1bec4)
 원본 Hydrant이미지입니다. reCAPTCHA에서의 상황은 “소화전이 포함된 타일을 모두 선택하세요” 입니다.
